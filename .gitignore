@@ -35,3 +35,5 @@ out/
 
 ### VS Code ###
 .vscode/
+
+src/jpaModelgen/java/br/com/devsoft/entidades/Usuario_.java

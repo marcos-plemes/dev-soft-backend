@@ -3,9 +3,9 @@ server:
 
 spring: 
    datasource: 
-      url: jdbc:postgresql://localhost:5432/devsoft
+      url: jdbc:postgresql://db.rndmzyexjwkaxmtrmfqb.supabase.co:5432/dev-soft
       username: postgres
-      password: postgres
+      password: Fr12ju90.@142536
 
    jpa:
       properties:
