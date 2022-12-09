@@ -1,0 +1,18 @@
+server:
+   port: 9191
+
+spring: 
+   datasource: 
+      url: jdbc:postgresql://localhost:5432/devsoft
+      username: postgres
+      password: postgres
+
+   jpa:
+      properties:
+         hibernate:
+            dialect: org.hibernate.dialect.PostgreSQL95Dialect
+            format_sql: false
+            ddl-auto: none
+            temp:
+               use_jdbc_metadata_defaults: false
+      show-sql: true
