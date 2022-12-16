@@ -1,6 +1,5 @@
 package br.com.devsoft.entidades;
 
-import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
@@ -12,11 +11,13 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import br.com.devsoft.infra.entidade.EntidadeBase;
+
 @Entity
 @Table(name = "usuario")
-public class Usuario implements Serializable {
+public class Usuario extends EntidadeBase {
     
-    private static final long serialVersionUID = 3345888037831841981L;
+    private static final long serialVersionUID = -4063291031574463046L;
     
     @Id
     @SequenceGenerator(name = "seq_usuario", sequenceName = "usuario_us_codigo_seq", allocationSize = 1)

@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.com.devsoft.login.dtos.LoginDto;
+
 @RestController
 @RequestMapping("/login")
 public class LoginApi {
@@ -13,7 +15,7 @@ public class LoginApi {
     private LoginService loginService;
     
     @GetMapping
-    public String login() {
+    public LoginDto login() {
         return this.loginService.login();
     }
     
