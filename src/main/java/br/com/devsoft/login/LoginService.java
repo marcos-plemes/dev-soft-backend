@@ -13,8 +13,9 @@ public class LoginService {
     private LoginRepository loginRepository;
     
     @Transactional(readOnly = true)
-    public LoginDto login() {
-        return this.loginRepository.login();
+    public LoginDto login(final LoginDto filtro) {
+        return this.loginRepository.login(filtro)
+                .orElseThrow(() -> new RuntimeException("Dados Incorretos!"));
     }
     
 }

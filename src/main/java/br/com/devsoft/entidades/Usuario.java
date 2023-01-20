@@ -31,8 +31,17 @@ public class Usuario extends EntidadeBase {
     @Column(name = "us_sobrenome", nullable = false, length = 20)
     private String sobrenome;
     
+    @Column(name = "us_senha", nullable = false, length = 265)
+    private String senha;
+    
+    @Column(name = "us_email", nullable = false, length = 40)
+    private String email;
+    
     @Column(name = "us_cpf", nullable = false, length = 11)
     private String cpf;
+    
+    @Column(name = "us_celular", nullable = false, length = 11)
+    private String celular;
     
     @Column(name = "us_datacad", nullable = false)
     private LocalDateTime dataDeCadastro;
@@ -66,12 +75,36 @@ public class Usuario extends EntidadeBase {
         this.sobrenome = sobrenome;
     }
     
+    public String getSenha() {
+        return this.senha;
+    }
+    
+    public void setSenha(final String senha) {
+        this.senha = senha;
+    }
+    
+    public String getEmail() {
+        return this.email;
+    }
+    
+    public void setEmail(final String email) {
+        this.email = email;
+    }
+    
     public String getCpf() {
         return this.cpf;
     }
     
     public void setCpf(final String cpf) {
         this.cpf = cpf;
+    }
+    
+    public String getCelular() {
+        return this.celular;
+    }
+    
+    public void setCelular(final String celular) {
+        this.celular = celular;
     }
     
     public LocalDateTime getDataDeCadastro() {

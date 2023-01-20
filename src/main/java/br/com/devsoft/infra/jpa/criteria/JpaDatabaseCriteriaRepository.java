@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import br.com.devsoft.infra.entidade.EntidadeBase;
+import br.com.devsoft.infra.entidade.EntidadeBase_;
 import br.com.devsoft.infra.jpa.JpaDatabaseNativoRepository;
 import br.com.devsoft.infra.jpa.criteria.builder.ConsultaCriteriaObject;
 import br.com.devsoft.infra.jpa.criteria.builder.ConsultasCriteriaBuilder;
@@ -44,28 +45,50 @@ public class JpaDatabaseCriteriaRepository<E extends EntidadeBase, F extends Fro
     }
     
     private TypedQuery<?> createTypedQuery(final ConsultaCriteriaObject<E, F> criteriaObject) {
+        
         final CriteriaQuery<?> criteria = this.cb().createQuery(criteriaObject.getDto());
-        final F fromFrapper = criteriaObject.getFromWrapperApplier().apply(criteria.from(this.getClasseDeE()), criteria);
+        final F fromWrapper = criteriaObject.getFromWrapperApplier().apply(criteria.from(this.getClasseDeE()), criteria);
+        criteria.multiselect(criteriaObject.getSelectionApplier().apply(fromWrapper));
         
-        criteria.multiselect(criteriaObject.getSelectionApplier().apply(fromFrapper));
-        final List<Predicate> predicates = criteriaObject.getWhereApplier().apply(fromFrapper);
-        criteria.where(predicates.toArray(new Predicate[predicates.size()]));
-        
-        if (Objects.nonNull(criteriaObject.getOrderByApplier())) {
-            criteria.orderBy(criteriaObject.getOrderByApplier().apply(fromFrapper));
-        }
-        
-        if (Objects.nonNull(criteriaObject.getGroupByApplier())) {
-            criteria.groupBy(criteriaObject.getGroupByApplier().apply(fromFrapper));
-        }
-        
-        if (Objects.nonNull(criteriaObject.getHavingApplier())) {
-            final List<Predicate> predicatesHaving = criteriaObject.getWhereApplier().apply(fromFrapper);
-            criteria.having(predicatesHaving.toArray(new Predicate[predicatesHaving.size()]));
-        }
+        this.montarConsulta(criteria, criteriaObject, fromWrapper);
         
         return this.getEntityManager().createQuery(criteria);
         
+    }
+    
+    private Long count(final ConsultaCriteriaObject<E, F> criteriaObject) {
+        
+        final CriteriaQuery<Long> criteria = this.cb().createQuery(Long.class);
+        final F fromWrapper = criteriaObject.getFromWrapperApplier().apply(criteria.from(this.getClasseDeE()), criteria);
+        criteria.select(fromWrapper.getFrom().get(EntidadeBase_.countOver).as(Long.class)).distinct(true);
+        
+        this.montarConsulta(criteria, criteriaObject, fromWrapper);
+        
+        try {
+            return this.getEntityManager().createQuery(criteria).getSingleResult();
+        } catch (final NoResultException e) {
+            return 0L;
+        }
+        
+    }
+    
+    private void montarConsulta(final CriteriaQuery<?> criteria, final ConsultaCriteriaObject<E, F> criteriaObject, final F fromWrapper) {
+        
+        final List<Predicate> predicates = criteriaObject.getWhereApplier().apply(fromWrapper);
+        criteria.where(predicates.toArray(new Predicate[predicates.size()]));
+        
+        if (Objects.nonNull(criteriaObject.getOrderByApplier())) {
+            criteria.orderBy(criteriaObject.getOrderByApplier().apply(fromWrapper));
+        }
+        
+        if (Objects.nonNull(criteriaObject.getGroupByApplier())) {
+            criteria.groupBy(criteriaObject.getGroupByApplier().apply(fromWrapper));
+        }
+        
+        if (Objects.nonNull(criteriaObject.getHavingApplier())) {
+            final List<Predicate> predicatesHaving = criteriaObject.getWhereApplier().apply(fromWrapper);
+            criteria.having(predicatesHaving.toArray(new Predicate[predicatesHaving.size()]));
+        }
     }
     
 }

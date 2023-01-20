@@ -20,30 +20,31 @@ import br.com.devsoft.login.dtos.LoginDto;
 @Repository
 public class LoginRepository extends JpaEntityRepository<Usuario, LoginFromWrapper, Integer> {
     
-    public LoginDto login() {
+    public Optional<LoginDto> login(final LoginDto filtro) {
         
         final ConsultaCriteriaObject<Usuario, LoginFromWrapper> teste = this.gerarConsultaCriteria()
                 .dto(LoginDto.class)
                 .fromWrapperApplier(LoginFromWrapper.applier())
                 .selectionApplier(this.selectionApplier())
-                .whereApplier(this.whereApplier())
+                .whereApplier(this.whereApplier(filtro))
                 .build();
         
-        final Optional<LoginDto> lista = this.getSingleResult(teste);
-        return lista.get();
+        return this.getSingleResult(teste);
         
     }
     
     private SelectionApplierInterface<Usuario, LoginFromWrapper> selectionApplier() {
         return from -> Arrays.asList(
+                from.getFrom().get(Usuario_.codigo),
                 from.getFrom().get(Usuario_.nome));
     }
     
-    private WhereApplierInterface<Usuario, LoginFromWrapper> whereApplier() {
+    private WhereApplierInterface<Usuario, LoginFromWrapper> whereApplier(final LoginDto filtro) {
         return from -> {
             final List<Predicate> predicates = new ArrayList<>();
             
-            predicates.add(this.cb().equal(from.getFrom().get(Usuario_.codigo), 1));
+            predicates.add(this.cb().equal(from.getFrom().get(Usuario_.email), filtro.getEmail()));
+            predicates.add(this.cb().equal(from.getFrom().get(Usuario_.senha), filtro.getSenha()));
             
             return predicates;
         };
